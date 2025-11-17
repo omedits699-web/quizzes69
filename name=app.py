@@ -1,11 +1,12 @@
 from flask import Flask, request, session, redirect, url_for
-import secrets
+import os
 
+# Use a stable secret key from environment in production
+SECRET_KEY = os.environ.get("SECRET_KEY", "dev-secret-key-for-local")
 app = Flask(__name__)
-app.secret_key = secrets.token_hex(32)
+app.secret_key = SECRET_KEY
 
 # ====== DATA STORAGE ======
-# Quiz data
 questions = [
     "What is a programming language?",
     "Which of the following is a programming language?",
@@ -27,10 +28,9 @@ answers = ["B", "B", "B", "B", "B"]
 # Student score records (temporary in memory)
 student_scores = []
 
-# Admin credentials
-ADMIN_USERNAME = "admin"
-ADMIN_PASSWORD = "secure123"
-
+# Admin credentials (use env var in production)
+ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "admin")
+ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "secure123")
 
 # ====== HTML UI STYLES ======
 CSS = """
@@ -70,6 +70,7 @@ input[type=text], input[type=password] {
 }
 a { color: #4CAF50; text-decoration: none; }
 a:hover { text-decoration: underline; }
+table { margin: 0 auto; }
 </style>
 """
 
@@ -230,6 +231,9 @@ def admin_logout():
     session.pop('admin', None)
     return redirect(url_for('home'))
 
-# ====== RUN ======
+# ====== RUN for local testing ======
 if __name__ == '__main__':
-    app.run(debug=True)
+    # local-only server settings for development
+    port = int(os.environ.get('PORT', 5000))
+    # bind to 127.0.0.1 for local dev; hosted platforms will run via gunicorn
+    app.run(host='127.0.0.1', port=port, debug=False)
