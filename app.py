@@ -25,10 +25,9 @@ options = [
 
 answers = ["B", "B", "B", "B", "B"]
 
-# Student score records (temporary in memory)
+
 student_scores = []
 
-# Admin credentials (use env var in production)
 ADMIN_USERNAME = os.environ.get("ADMIN_USERNAME", "admin")
 ADMIN_PASSWORD = os.environ.get("ADMIN_PASSWORD", "secure123")
 
@@ -237,3 +236,4 @@ if __name__ == '__main__':
     port = int(os.environ.get('PORT', 5000))
     # bind to 127.0.0.1 for local dev; hosted platforms will run via gunicorn
     app.run(host='127.0.0.1', port=port, debug=False)
+
